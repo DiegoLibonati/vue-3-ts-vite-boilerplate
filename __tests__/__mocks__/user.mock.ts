@@ -1,0 +1,24 @@
+import type { User } from "@/types/app";
+
+export const mockUsers: User[] = [
+  {
+    id: 1,
+    name: "Leanne Graham",
+    username: "Bret",
+    email: "sincere@april.biz",
+    phone: "1-770-736-8031 x56442",
+    website: "hildegard.org",
+    company: { name: "Romaguera-Crona" },
+  },
+  {
+    id: 2,
+    name: "Ervin Howell",
+    username: "Antonette",
+    email: "shanna@melissa.tv",
+    phone: "010-692-6593 x09125",
+    website: "anastasia.net",
+    company: { name: "Deckow-Crist" },
+  },
+];
+
+export const mockUser = mockUsers[0];

@@ -1,0 +1,22 @@
+import type { User } from "@/types/app";
+import type { ResponseDirect } from "@/types/responses";
+
+const userService = {
+  getAll: async (): Promise<ResponseDirect<User[]>> => {
+    const response = await fetch(`/users`);
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status.toString()}`);
+
+    return (await response.json()) as ResponseDirect<User[]>;
+  },
+
+  getById: async (id: number): Promise<ResponseDirect<User>> => {
+    const response = await fetch(`/users/${id.toString()}`);
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status.toString()}`);
+
+    return (await response.json()) as ResponseDirect<User>;
+  },
+};
+
+export default userService;

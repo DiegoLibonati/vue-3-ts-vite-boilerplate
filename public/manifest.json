@@ -1,0 +1,21 @@
+{
+  "name": "Vue 3 TS Vite Boilerplate",
+  "short_name": "Vue Boilerplate",
+  "description": "Vue 3 TS Vite Boilerplate is a production-ready starting point for building single-page applications with Vue 3, TypeScript, and Vite.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
