@@ -9,6 +9,8 @@ import type { Router } from "vue-router";
 
 import ContextPage from "@/pages/ContextPage/ContextPage.vue";
 
+import { ThemeKey, ToggleThemeKey } from "@/constants/injectionKeys";
+
 const createTestRouter = (): Router =>
   createRouter({
     history: createMemoryHistory("/"),
@@ -21,8 +23,8 @@ const renderPage = (theme: "light" | "dark" = "dark", mockToggle = vi.fn()): Ren
     global: {
       plugins: [createTestRouter()],
       provide: {
-        theme: themeRef,
-        toggleTheme: mockToggle,
+        [ThemeKey as symbol]: themeRef,
+        [ToggleThemeKey as symbol]: mockToggle,
       },
     },
   });
@@ -65,6 +67,18 @@ describe("ContextPage", () => {
       await user.click(screen.getByRole("button", { name: "Toggle theme" }));
 
       expect(mockToggle).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("error handling", () => {
+    it("should throw when theme context is not provided", () => {
+      expect(() =>
+        render(ContextPage, {
+          global: {
+            plugins: [createTestRouter()],
+          },
+        })
+      ).toThrow("Theme context not provided");
     });
   });
 });

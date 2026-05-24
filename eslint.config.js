@@ -9,7 +9,7 @@ import prettierConfig from "eslint-config-prettier";
 export default [
   // Archivos ignorados
   {
-    ignores: ["dist/**", "node_modules/**", "coverage/**"],
+    ignores: ["dist/**", "node_modules/**", "coverage/**", "*.config.js", "vite.config.ts"],
   },
 
   // Reglas base de JS
@@ -35,7 +35,7 @@ export default [
       parserOptions: {
         parser: tseslint.parser,
         extraFileExtensions: [".vue"],
-        project: ["./tsconfig.app.json", "./tsconfig.test.json"],
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
         ecmaVersion: "latest",
         sourceType: "module",
@@ -58,7 +58,7 @@ export default [
         ...globals.es2022,
       },
       parserOptions: {
-        project: ["./tsconfig.app.json", "./tsconfig.test.json"],
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },

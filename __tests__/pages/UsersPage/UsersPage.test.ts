@@ -36,6 +36,11 @@ describe("UsersPage", () => {
       expect(screen.getByText("Loading users…")).toBeInTheDocument();
     });
 
+    it("should render the loading state with role status", () => {
+      renderPage();
+      expect(screen.getByRole("status")).toHaveTextContent("Loading users…");
+    });
+
     it("should render the back to home link", () => {
       renderPage();
       expect(screen.getByRole("link", { name: "Back to Home" })).toBeInTheDocument();
@@ -82,6 +87,14 @@ describe("UsersPage", () => {
       renderPage();
 
       expect(await screen.findByText(/HTTP error! status: 500/)).toBeInTheDocument();
+    });
+
+    it("should render the error message with role alert", async () => {
+      mockMswServer.use(http.get("/users", () => new HttpResponse(null, { status: 500 })));
+
+      renderPage();
+
+      expect(await screen.findByRole("alert")).toHaveTextContent(/HTTP error! status: 500/);
     });
 
     it("should not render any user cards on error", async () => {

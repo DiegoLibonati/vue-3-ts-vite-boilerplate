@@ -51,11 +51,6 @@ describe("AppLink", () => {
       renderComponent();
       expect(screen.getByRole("link", { name: "test link" })).toHaveClass("app-link");
     });
-
-    it("should apply the extra className when provided", () => {
-      renderComponent({ className: "nav-link" });
-      expect(screen.getByRole("link", { name: "test link" })).toHaveClass("nav-link");
-    });
   });
 
   describe("external links", () => {

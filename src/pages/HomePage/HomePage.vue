@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import AppLink from "@/components/AppLink/AppLink.vue";
-
-import "@/pages/HomePage/HomePage.css";
 </script>
 
 <template>
@@ -19,3 +17,35 @@ import "@/pages/HomePage/HomePage.css";
     </nav>
   </section>
 </template>
+
+<style scoped>
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  text-align: center;
+  padding: var(--spacing-xl);
+  min-height: calc(100vh - var(--spacing-xl) * 2);
+}
+
+.home-page__title {
+  font-size: 2.5rem;
+  color: var(--color-white);
+}
+
+.home-page__subtitle {
+  font-size: var(--font-size-lg);
+  color: var(--color-gray-light);
+  max-width: 37.5rem;
+}
+
+.home-page__nav {
+  display: flex;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: var(--spacing-lg);
+}
+</style>

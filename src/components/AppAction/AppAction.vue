@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { ActionProps } from "@/types/props";
 
-import "@/components/AppAction/AppAction.css";
-
 defineProps<ActionProps>();
 defineEmits<{
   click: [event: MouseEvent];
@@ -14,9 +12,42 @@ defineEmits<{
     :id="id"
     type="button"
     :aria-label="ariaLabel"
-    :class="['app-action', className].filter(Boolean).join(' ')"
+    class="app-action"
     @click="$emit('click', $event)"
   >
     <slot />
   </button>
 </template>
+
+<style scoped>
+.app-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  border-radius: 0.25rem;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.app-action:hover {
+  background-color: rgba(var(--color-accent-rgb), 0.85);
+}
+
+.app-action:active {
+  transform: scale(0.97);
+}
+
+.app-action:focus-visible {
+  outline: 0.125rem solid var(--color-white);
+  outline-offset: 0.125rem;
+}
+</style>

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import AppLink from "@/components/AppLink/AppLink.vue";
-
-import "@/pages/AboutPage/AboutPage.css";
 </script>
 
 <template>
@@ -16,3 +14,25 @@ import "@/pages/AboutPage/AboutPage.css";
     <AppLink id="link-home" href="/" ariaLabel="Back to Home">← Back to Home</AppLink>
   </section>
 </template>
+
+<style scoped>
+.about-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  max-width: 43.75rem;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+.about-page__title {
+  color: var(--color-white);
+  font-size: 2rem;
+}
+
+.about-page__text {
+  color: var(--color-gray-light);
+  font-size: var(--font-size-lg);
+  line-height: 1.7;
+}
+</style>

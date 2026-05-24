@@ -4,14 +4,16 @@ import { RouterView } from "vue-router";
 
 import type { Ref } from "vue";
 
+import { ThemeKey, ToggleThemeKey } from "@/constants/injectionKeys";
+
 const theme: Ref<"light" | "dark"> = ref("dark");
 
 const toggleTheme = (): void => {
   theme.value = theme.value === "dark" ? "light" : "dark";
 };
 
-provide("theme", theme);
-provide("toggleTheme", toggleTheme);
+provide(ThemeKey, theme);
+provide(ToggleThemeKey, toggleTheme);
 </script>
 
 <template>

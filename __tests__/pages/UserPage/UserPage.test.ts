@@ -37,6 +37,11 @@ describe("UserPage", () => {
       expect(screen.getByText("Loading user…")).toBeInTheDocument();
     });
 
+    it("should render the loading state with role status", () => {
+      renderPage();
+      expect(screen.getByRole("status")).toHaveTextContent("Loading user…");
+    });
+
     it("should render the back to users link", () => {
       renderPage();
       expect(screen.getByRole("link", { name: "Back to Users list" })).toBeInTheDocument();
@@ -68,6 +73,14 @@ describe("UserPage", () => {
       renderPage("1");
 
       expect(await screen.findByText(/HTTP error! status: 500/)).toBeInTheDocument();
+    });
+
+    it("should render the error message with role alert", async () => {
+      mockMswServer.use(http.get("/users/1", () => new HttpResponse(null, { status: 500 })));
+
+      renderPage("1");
+
+      expect(await screen.findByRole("alert")).toHaveTextContent(/HTTP error! status: 500/);
     });
 
     it("should show an invalid id error when the id is not a number", async () => {

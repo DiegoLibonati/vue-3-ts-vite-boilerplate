@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import type { RouteRecordRaw } from "vue-router";
 
+import envs from "@/constants/envs";
+
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
@@ -38,6 +40,12 @@ const routes: RouteRecordRaw[] = [
     path: "/:pathMatch(.*)*",
     name: "notFound",
     component: async () => import("@/pages/NotFoundPage/NotFoundPage.vue"),
+    beforeEnter: (): { name: string } | undefined => {
+      if (envs.REDIRECT_IF_ROUTE_NOT_EXISTS) {
+        return { name: "home" };
+      }
+      return undefined;
+    },
   },
 ];
 

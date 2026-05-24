@@ -72,10 +72,11 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 "husky": "^9.0.0"
 "jsdom": "^26.1.0"
 "lint-staged": "^15.0.0"
-"msw": "^2.14.6"
+"msw": "2.10.4"
 "prettier": "^3.0.0"
 "typescript": "^5.2.2"
 "typescript-eslint": "^8.0.0"
+"undici": "^7.25.0"
 "vite": "^7.1.6"
 "vitest": "^3.2.0"
 "vue-eslint-parser": "^9.4.3"
@@ -130,14 +131,15 @@ Before committing, the project enforces code quality through pre-commit hooks. H
 
 You can also run the tools manually outside of the commit flow:
 
-| Command                | Description                   |
-| ---------------------- | ----------------------------- |
-| `npm run lint`         | Check for linting errors      |
-| `npm run lint:fix`     | Fix linting errors            |
-| `npm run lint:all`     | Fix linting all (src + tests) |
-| `npm run format`       | Format code with Prettier     |
-| `npm run format:check` | Check code formatting         |
-| `npm run format:all`   | Format Prettier (src + tests) |
+| Command                | Description                        |
+| ---------------------- | ---------------------------------- |
+| `npm run lint`         | Check for linting errors           |
+| `npm run lint:fix`     | Fix linting errors                 |
+| `npm run lint:all`     | Fix linting all (src + tests)      |
+| `npm run format`       | Format code with Prettier          |
+| `npm run format:check` | Check code formatting              |
+| `npm run format:all`   | Format Prettier (src + tests)      |
+| `npm run type-check`   | Type-check the app with TypeScript |
 
 ## Env Keys
 
@@ -169,6 +171,7 @@ vue-3-ts-vite-boilerplate/
 │   ├── stores/                     # Tests for Pinia stores
 │   └── vitest.setup.ts             # Vitest global setup (jest-dom, MSW lifecycle)
 ├── public/                         # Static assets served as-is
+│   ├── favicon.ico
 │   ├── icon-192.png
 │   ├── icon-512.png
 │   ├── manifest.json
@@ -180,6 +183,7 @@ vue-3-ts-vite-boilerplate/
 │   │   └── UserCard/               # User profile card component
 │   ├── constants/                  # App-wide constant values
 │   │   ├── envs.ts                 # Environment variable constants
+│   │   ├── injectionKeys.ts        # Typed InjectionKey definitions
 │   │   └── vars.ts                 # General constants
 │   ├── pages/                      # Route-level page components
 │   │   ├── AboutPage/
@@ -204,14 +208,19 @@ vue-3-ts-vite-boilerplate/
 │   ├── App.vue                     # Root component (theme provide)
 │   ├── main.ts                     # App entry point
 │   └── vite-env.d.ts               # Vite environment type declarations
+├── .editorconfig                   # Editor formatting rules
 ├── .env.example                    # Example environment variables
+├── .github/workflows/ci.yml        # GitHub Actions CI pipeline
+├── .npmrc                          # npm engine-strict config
+├── .nvmrc                          # Node version for nvm
+├── .vscode/extensions.json         # Recommended VS Code extensions
 ├── eslint.config.js                # ESLint flat config
 ├── index.html                      # HTML entry point
 ├── tsconfig.json                   # TypeScript config references
 ├── tsconfig.base.json              # Base TypeScript compiler options
 ├── tsconfig.app.json               # App-specific TypeScript config
 ├── tsconfig.test.json              # Test-specific TypeScript config
-├── vite.config.js                  # Vite build config
+├── vite.config.ts                  # Vite build config
 └── vitest.config.js                # Vitest test config
 ```
 
@@ -221,7 +230,7 @@ vue-3-ts-vite-boilerplate/
 | `__tests__/__mocks__/` | Reusable mock data (users, MSW handlers and server, styles, files) |
 | `src/components/`      | Presentational components reused across pages                      |
 | `src/constants/`       | Centralized constants — env vars and general app values            |
-| `src/pages/`           | One folder per route; each contains a `.vue` and a `.css` file     |
+| `src/pages/`           | One folder per route; each `.vue` file uses scoped styles          |
 | `src/router/`          | Route declarations with lazy loading and wildcard fallback         |
 | `src/services/`        | `fetch`-based API modules, one per resource                        |
 | `src/stores/`          | Pinia store modules using the Composition API                      |
@@ -272,7 +281,7 @@ Local component state is handled with `ref` and `reactive` inside `<script setup
 
 ### Routing
 
-Vue Router v4 with `createWebHashHistory` (compatible with static hosting). Route structure:
+Vue Router v4 with `createWebHistory` (HTML5 history mode). Route structure:
 
 - All routes are **lazy-loaded** via dynamic `import()`, enabling automatic per-route code splitting.
 - A catch-all `/:pathMatch(.*)*` route drives the 404 behavior from the `VITE_REDIRECT_IF_ROUTE_NOT_EXISTS` env flag — either redirecting to `/home` or rendering the `NotFoundPage` — making the fallback configurable without code changes.
@@ -342,6 +351,48 @@ npm run preview
 ```
 
 `preview` serves the contents of `dist/` on a local port so you can confirm the production bundle behaves as expected.
+
+## Continuous Integration
+
+The repository ships with a **GitHub Actions** pipeline defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). It runs automatically on every `push` and `pull_request` targeting the `main` branch.
+
+### Pipeline overview
+
+```
+                      ┌─── PR or push to main ───┐
+                      ▼                           ▼
+┌──────────────────────┐  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+│   lint-and-audit     │─▶│     testing      │─▶│      build       │─▶│   build-docker   │
+│  ESLint · tsc        │  │     Vitest       │  │ vue-tsc + vite   │  │ dev + prod images │
+└──────────────────────┘  └──────────────────┘  └──────────────────┘  └──────────────────┘
+```
+
+All four jobs run sequentially — each depends on the previous one passing.
+
+### Jobs
+
+1. **`lint-and-audit`** — installs dependencies, runs `npm run lint` (ESLint), and type-checks with `npm run type-check` (`tsc`).
+2. **`testing`** — runs the full Vitest test suite with `npm run test`.
+3. **`build`** — produces the production bundle via `vue-tsc` + `vite build`.
+4. **`build-docker`** — builds both the development (`Dockerfile.development`) and production (`Dockerfile.production`) Docker images to verify they compile.
+
+### Running the same checks locally
+
+```bash
+# lint-and-audit
+npm run lint
+npm run type-check
+
+# testing
+npm run test
+
+# build
+npm run build
+
+# build-docker
+docker build -f Dockerfile.development -t app:dev .
+docker build -f Dockerfile.production -t app:prod .
+```
 
 ## Production
 

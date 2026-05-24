@@ -1,20 +1,16 @@
-export interface DefaultProps {
-  className?: string;
-}
-
-export interface LinkProps extends DefaultProps {
+export interface LinkProps {
   id: string;
   href: string;
   ariaLabel: string;
   target?: string;
 }
 
-export interface ActionProps extends DefaultProps {
+export interface ActionProps {
   id: string;
   ariaLabel: string;
 }
 
-export interface UserCardProps extends DefaultProps {
+export interface UserCardProps {
   name: string;
   username: string;
   email: string;
@@ -23,4 +19,8 @@ export interface UserCardProps extends DefaultProps {
   company: {
     name: string;
   };
+}
+
+export interface UserPageProps {
+  id: string;
 }

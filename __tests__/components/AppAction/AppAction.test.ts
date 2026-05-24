@@ -51,11 +51,6 @@ describe("AppAction", () => {
       expect(screen.getByRole("button", { name: "test action" })).toHaveClass("app-action");
     });
 
-    it("should apply the extra className when provided", () => {
-      renderComponent({ className: "btn-primary" });
-      expect(screen.getByRole("button", { name: "test action" })).toHaveClass("btn-primary");
-    });
-
     it("should render the default slot content", () => {
       renderComponent({}, "Click me");
       expect(screen.getByRole("button", { name: "test action" })).toHaveTextContent("Click me");
