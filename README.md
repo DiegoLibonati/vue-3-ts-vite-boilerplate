@@ -275,7 +275,7 @@ Each layer has a single responsibility:
 
 Local component state is handled with `ref` and `reactive` inside `<script setup>`. For shared state the project provides two patterns:
 
-**Pinia store** — demonstrated with a counter (`src/stores/counter.ts`). Uses the Composition API store format: `ref` for state, `computed` for derived values, and plain functions for actions. The store is typed automatically and consumed directly in components.
+**Pinia store** — demonstrated with a counter (`src/stores/useCounterStore.ts`). Uses the Composition API store format: `ref` for state, `computed` for derived values, and plain functions for actions. The store is typed automatically and consumed directly in components.
 
 **provide / inject** — demonstrated with a theme toggle in `App.vue`. The root component provides a reactive value typed with `InjectionKey<T>`, and child components inject it via a safe helper that throws if called outside the provider tree — fail-fast guard equivalent to React's context pattern.
 

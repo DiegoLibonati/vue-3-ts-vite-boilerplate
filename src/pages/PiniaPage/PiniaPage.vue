@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useCounterStore } from "@/stores/counter";
+import { useCounterStore } from "@/stores/useCounterStore";
 
 import AppAction from "@/components/AppAction/AppAction.vue";
 import AppLink from "@/components/AppLink/AppLink.vue";
